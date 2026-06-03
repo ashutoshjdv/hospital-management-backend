@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -33,5 +34,19 @@ public class Users {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            schema = "auth",
+            joinColumns =
+            @JoinColumn(name = "user_id"),
+            inverseJoinColumns =
+            @JoinColumn(name = "role_id")
+    )
+    private Set<Roles> roles;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Profiles profile;
 
 }

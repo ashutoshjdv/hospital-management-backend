@@ -1,0 +1,1 @@
+ALTER TABLE auth.users ADD CONSTRAINT uk_email_user UNIQUE(email);
