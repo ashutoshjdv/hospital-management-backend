@@ -31,7 +31,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                                                  .flatMap(role -> role.getPermissions().stream())
                                                  .map(
                                                          permission -> (GrantedAuthority) new SimpleGrantedAuthority(permission.getName()))
-                                                 .toList();
+                .distinct()
+                .toList();
 
 //        System.out.println(authorities);
 

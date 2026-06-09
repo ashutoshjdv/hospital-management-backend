@@ -1,5 +1,8 @@
 package com.hospital.hospitalmanagementbackend.auth.controller;
 
+import com.hospital.hospitalmanagementbackend.auth.dto.request.AssignRoleRequest;
+import com.hospital.hospitalmanagementbackend.auth.dto.response.UserResponse;
+import com.hospital.hospitalmanagementbackend.auth.dto.response.UserRoleResponse;
 import com.hospital.hospitalmanagementbackend.auth.entity.Users;
 import com.hospital.hospitalmanagementbackend.auth.service.UserServices;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +24,7 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('MANAGE_USERS')")
-    public List<Users> getUsers() {
+    public List<UserResponse> getUsers() {
         return userServices.getUsersService();
     }
 
@@ -41,6 +44,12 @@ public class UserController {
     public String verifyUsers(@PathVariable UUID id) {
         return userServices.verifyUserService(id);
     }
+    @PutMapping("/{id}/roles")
+    @PreAuthorize("hasAuthority('VERIFY_USER')")
+    public String addRoleToUser(@PathVariable UUID id, @RequestBody AssignRoleRequest request) {
+        return userServices.addRoleToUserService(id, request);
+    }
+
 }
 
 
