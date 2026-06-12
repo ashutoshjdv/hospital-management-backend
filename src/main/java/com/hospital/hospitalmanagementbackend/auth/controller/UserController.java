@@ -45,7 +45,7 @@ public class UserController {
         return userServices.verifyUserService(id);
     }
     @PutMapping("/{id}/roles")
-    @PreAuthorize("hasAuthority('VERIFY_USER')")
+    @PreAuthorize("hasAuthority('MANAGE_USERS')")
     public String addRoleToUser(@PathVariable UUID id, @RequestBody AssignRoleRequest request) {
         return userServices.addRoleToUserService(id, request);
     }
