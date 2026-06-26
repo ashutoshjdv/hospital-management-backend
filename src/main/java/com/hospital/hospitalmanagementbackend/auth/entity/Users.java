@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -48,5 +50,13 @@ public class Users {
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Profiles profile;
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<RefreshTokens> refreshTokens = new ArrayList<>();
+
 
 }

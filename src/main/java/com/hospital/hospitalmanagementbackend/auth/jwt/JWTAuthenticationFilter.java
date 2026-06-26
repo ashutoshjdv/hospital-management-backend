@@ -1,6 +1,9 @@
 package com.hospital.hospitalmanagementbackend.auth.jwt;
 
 import com.hospital.hospitalmanagementbackend.auth.security.CustomUserDetailsService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.SignatureException;
 
 @Component
 @RequiredArgsConstructor
@@ -44,31 +48,45 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        jwt = authHeader.substring(7);
+        try {
+            jwt = authHeader.substring(7);
 
-        userEmail = jwtService.extractUsername(jwt);
+            userEmail = jwtService.extractUsername(jwt);
 
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
-            if (jwtService.isTokenValid(jwt, userDetails.getUsername())) {
+                if (jwtService.isTokenValid(jwt, userDetails.getUsername())) {
 
-                UsernamePasswordAuthenticationToken authToken =
+                    UsernamePasswordAuthenticationToken authToken =
 
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
 
-                authToken.setDetails(new WebAuthenticationDetailsSource()
-                                            .buildDetails(request)
-                );
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authToken);
+                    authToken.setDetails(new WebAuthenticationDetailsSource()
+                            .buildDetails(request)
+                    );
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(authToken);
+                }
             }
+        }catch (
+                ExpiredJwtException |
+                MalformedJwtException |
+                UnsupportedJwtException |
+                IllegalArgumentException ex
+        ) {
+
+            response.setStatus(
+                    HttpServletResponse.SC_UNAUTHORIZED
+            );
+
+            return;
         }
         filterChain.doFilter(request, response);
     }

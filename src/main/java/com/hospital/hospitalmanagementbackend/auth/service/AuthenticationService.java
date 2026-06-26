@@ -1,14 +1,19 @@
 package com.hospital.hospitalmanagementbackend.auth.service;
 
 import com.hospital.hospitalmanagementbackend.auth.dto.request.LoginRequest;
+import com.hospital.hospitalmanagementbackend.auth.dto.request.LogoutRequest;
+import com.hospital.hospitalmanagementbackend.auth.dto.request.RefreshTokenRequest;
 import com.hospital.hospitalmanagementbackend.auth.dto.request.RegisterRequest;
 import com.hospital.hospitalmanagementbackend.auth.dto.response.LoginResponse;
+import com.hospital.hospitalmanagementbackend.auth.dto.response.RefreshTokenResponse;
 import com.hospital.hospitalmanagementbackend.auth.dto.response.RegisterResponse;
 import com.hospital.hospitalmanagementbackend.auth.entity.Permissions;
 import com.hospital.hospitalmanagementbackend.auth.entity.Profiles;
+import com.hospital.hospitalmanagementbackend.auth.entity.RefreshTokens;
 import com.hospital.hospitalmanagementbackend.auth.entity.Users;
 import com.hospital.hospitalmanagementbackend.auth.jwt.JWTService;
 import com.hospital.hospitalmanagementbackend.auth.repository.ProfileRepository;
+import com.hospital.hospitalmanagementbackend.auth.repository.RefreshTokensRepository;
 import com.hospital.hospitalmanagementbackend.auth.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +34,7 @@ public class AuthenticationService {
     private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
+    private final RefreshTokensRepository refreshTokensRepository;
 
     @Transactional
     public LoginResponse login(LoginRequest request) {
@@ -45,7 +51,21 @@ public class AuthenticationService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        String token = jwtService.generateToken(user.getEmail());
+        String accessToken =
+                jwtService.generateAccessToken(user.getEmail());
+
+        String refreshToken =
+                jwtService.generateRefreshToken(user.getEmail());
+
+        RefreshTokens refreshTokenEntity = RefreshTokens.builder()
+                                                .token(refreshToken)
+                                                .user(user)
+                                                .expiresAt(
+                                                        LocalDateTime.now().plusDays(7)
+                                                )
+                                                .build();
+
+        refreshTokensRepository.save(refreshTokenEntity);
 
         String[] authorities = user.getRoles().stream()
                 .flatMap(role -> role.getPermissions().stream())
@@ -56,7 +76,7 @@ public class AuthenticationService {
 
 //        System.out.println(authorities);
 
-        return new LoginResponse(token, user.getEmail(), authorities);
+        return new LoginResponse(accessToken, refreshToken, user.getEmail(), authorities);
     }
 
     @Transactional
@@ -101,5 +121,73 @@ public class AuthenticationService {
         profileRepository.save(profile);
 
         return new RegisterResponse(savedUser.getId(),savedUser.getEmail(), "user is registered successfully");
+    }
+
+    @Transactional
+    public RefreshTokenResponse refresh(
+            RefreshTokenRequest request
+    ) {
+
+        RefreshTokens refreshToken =
+                refreshTokensRepository
+                        .findByToken(
+                                request.getRefreshToken()
+                        )
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Refresh token not found"
+                                )
+                        );
+
+        if (refreshToken.isRevoked()) {
+            throw new RuntimeException(
+                    "Refresh token revoked"
+            );
+        }
+
+        if (refreshToken.getExpiresAt()
+                .isBefore(LocalDateTime.now())) {
+
+            throw new RuntimeException(
+                    "Refresh token expired"
+            );
+        }
+
+        String email =
+                jwtService.extractUsername(
+                        refreshToken.getToken()
+                );
+
+        String accessToken =
+                jwtService.generateAccessToken(
+                        email
+                );
+
+        return new RefreshTokenResponse(
+                accessToken
+        );
+    }
+
+    @Transactional
+    public void logout(
+            LogoutRequest request
+    ) {
+
+        RefreshTokens refreshToken =
+                refreshTokensRepository
+                        .findByToken(
+                                request.getRefreshToken()
+                        )
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Refresh token not found"
+                                )
+                        );
+
+        refreshToken.setRevoked(true);
+
+        refreshTokensRepository.save(
+                refreshToken
+        );
     }
 }

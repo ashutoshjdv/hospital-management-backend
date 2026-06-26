@@ -14,11 +14,86 @@ import java.util.Date;
 @Service
 public class JWTService {
 
-//    we use this secret key from app.props
+    private static final long ACCESS_TOKEN_EXPIRATION =
+            1000 * 60 * 15;
+    private static final long REFRESH_TOKEN_EXPIRATION =
+            1000L * 60 * 60 * 24 * 7;
+
+    //    we use this secret key from app.props
     @Value("${jwt.secret-key}")
     private String secretKey;
 
-//    generaate token boy!!!
+    //    common builder for access token and refresh token
+    private String buildToken(
+            String email,
+            long expiration
+    ) {
+
+        return Jwts.builder()
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(
+                        new Date(
+                                System.currentTimeMillis()
+                                        + expiration
+                        )
+                )
+                .signWith(
+                        Keys.hmacShaKeyFor(
+                                secretKey.getBytes(StandardCharsets.UTF_8)
+                        ),
+                        Jwts.SIG.HS256
+                )
+                .compact();
+    }
+
+    //    access token
+    public String generateAccessToken(
+            String email
+    ) {
+        return buildToken(
+                email,
+                ACCESS_TOKEN_EXPIRATION
+        );
+    }
+
+
+    //    refresh token
+    public String generateRefreshToken(
+            String email
+    ) {
+        return buildToken(
+                email,
+                REFRESH_TOKEN_EXPIRATION
+        );
+    }
+
+    //    getting expiration of token
+    public Date extractExpiration(
+            String token
+    ) {
+
+        return Jwts.parser()
+                .verifyWith(
+                        Keys.hmacShaKeyFor(
+                                secretKey.getBytes(StandardCharsets.UTF_8)
+                        )
+                )
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getExpiration();
+    }
+
+    //    compare time and return true or false
+    public boolean isTokenExpired(
+            String token
+    ) {
+        return extractExpiration(token)
+                .before(new Date());
+    }
+
+    //    generaate token boy!!!
     public String generateToken(String email) {
 
         return Jwts
@@ -26,13 +101,13 @@ public class JWTService {
                         new Date(System.currentTimeMillis() + 1000 * 60 * 60)
                 )
                 .signWith(
-                    Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)),
-                    Jwts.SIG.HS256
+                        Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)),
+                        Jwts.SIG.HS256
                 )
                 .compact();
     }
 
-//    get username or email from token
+    //    get username or email from token
     public String extractUsername(String token) {
 
         return Jwts.parser()
@@ -45,12 +120,16 @@ public class JWTService {
                 .getSubject();
     }
 
-//    check if token is valid or not
-//    dhonga na yajamani na?
-    public boolean isTokenValid(String token, String email) {
+    //    check if token is valid or not
+    //    dhonga na yajamani na?
+    public boolean isTokenValid(
+            String token,
+            String email
+    ) {
 
         final String username = extractUsername(token);
-        return username.equals(email);
+
+        return username.equals(email) && !isTokenExpired(token);
     }
 
 }
