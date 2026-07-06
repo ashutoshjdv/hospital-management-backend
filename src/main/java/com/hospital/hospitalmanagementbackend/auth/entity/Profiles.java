@@ -1,20 +1,24 @@
 package com.hospital.hospitalmanagementbackend.auth.entity;
 
+import com.hospital.hospitalmanagementbackend.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "profiles", schema = "auth")
-public class Profiles {
+public class Profiles extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+
 
     @Column(name = "first_name")
     private String firstName;
@@ -30,9 +34,6 @@ public class Profiles {
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

@@ -1,10 +1,14 @@
 package com.hospital.hospitalmanagementbackend.auth.entity;
 
 
+import com.hospital.hospitalmanagementbackend.common.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,19 +17,16 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "roles", schema = "auth")
-@Data
-public class Roles {
+@Getter
+@Setter
+@NoArgsConstructor
+public class Roles extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
 
     private String name;
 
     private String description;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
     @ManyToMany(fetch = FetchType.EAGER)
 

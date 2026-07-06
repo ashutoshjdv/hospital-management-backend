@@ -1,7 +1,11 @@
 package com.hospital.hospitalmanagementbackend.auth.entity;
 
+import com.hospital.hospitalmanagementbackend.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,14 +16,13 @@ import java.util.UUID;
 
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "users", schema = "auth")
-public class Users {
+public class Users extends BaseEntity {
 
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
 
     private String email;
 
@@ -31,8 +34,6 @@ public class Users {
     @Column(name = "is_email_verified")
     private boolean isEmailVerified;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
