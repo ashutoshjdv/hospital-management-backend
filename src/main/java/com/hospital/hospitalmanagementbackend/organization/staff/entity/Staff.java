@@ -1,13 +1,13 @@
 package com.hospital.hospitalmanagementbackend.organization.staff.entity;
 
-import com.hospital.hospitalmanagementbackend.auth.entity.Users;
+import com.hospital.hospitalmanagementbackend.auth.entity.User;
 import com.hospital.hospitalmanagementbackend.common.entity.AuditableEntity;
 import com.hospital.hospitalmanagementbackend.common.enums.EmploymentType;
 import com.hospital.hospitalmanagementbackend.common.enums.StaffStatus;
-import com.hospital.hospitalmanagementbackend.organization.department.entity.Departments;
-import com.hospital.hospitalmanagementbackend.organization.designation.entity.Designations;
-import com.hospital.hospitalmanagementbackend.organization.doctorprofile.entity.DoctorProfiles;
-import com.hospital.hospitalmanagementbackend.organization.hospital.entity.Hospitals;
+import com.hospital.hospitalmanagementbackend.organization.department.entity.Department;
+import com.hospital.hospitalmanagementbackend.organization.designation.entity.Designation;
+import com.hospital.hospitalmanagementbackend.organization.doctorprofile.entity.DoctorProfile;
+import com.hospital.hospitalmanagementbackend.organization.hospital.entity.Hospital;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,19 +27,19 @@ public class Staff extends AuditableEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id", nullable = false)
-    private Hospitals hospital;
+    private Hospital hospital;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = false)
-    private Departments department;
+    private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "designation_id", nullable = false)
-    private Designations designation;
+    private Designation designation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporting_manager_id")
@@ -66,5 +66,5 @@ public class Staff extends AuditableEntity {
     private Set<Staff> subordinates = new HashSet<>();
 
     @OneToOne(mappedBy = "staff", fetch = FetchType.LAZY)
-    private DoctorProfiles doctorProfile;
+    private DoctorProfile doctorProfile;
 }

@@ -17,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Designations extends BaseEntity {
+public class Designation extends BaseEntity {
 
     @Column(nullable = false, length = 100)
     private String name;

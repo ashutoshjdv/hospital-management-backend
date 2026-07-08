@@ -5,22 +5,19 @@ import com.hospital.hospitalmanagementbackend.common.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(name = "roles", schema = "auth")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Roles extends BaseEntity {
+public class Role extends BaseEntity {
 
 
     private String name;
@@ -37,9 +34,9 @@ public class Roles extends BaseEntity {
             inverseJoinColumns =
             @JoinColumn(name = "permission_id")
     )
-    private Set<Permissions> permissions;
+    private Set<Permission> permissions;
 
     @ManyToMany(mappedBy = "roles")
-    private List<Users> users;
+    private List<User> users;
 
 }

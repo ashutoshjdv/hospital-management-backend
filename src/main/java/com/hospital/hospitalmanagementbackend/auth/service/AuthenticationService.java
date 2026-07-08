@@ -7,24 +7,21 @@ import com.hospital.hospitalmanagementbackend.auth.dto.request.RegisterRequest;
 import com.hospital.hospitalmanagementbackend.auth.dto.response.LoginResponse;
 import com.hospital.hospitalmanagementbackend.auth.dto.response.RefreshTokenResponse;
 import com.hospital.hospitalmanagementbackend.auth.dto.response.RegisterResponse;
-import com.hospital.hospitalmanagementbackend.auth.entity.Permissions;
-import com.hospital.hospitalmanagementbackend.auth.entity.Profiles;
-import com.hospital.hospitalmanagementbackend.auth.entity.RefreshTokens;
-import com.hospital.hospitalmanagementbackend.auth.entity.Users;
+import com.hospital.hospitalmanagementbackend.auth.entity.Permission;
+import com.hospital.hospitalmanagementbackend.auth.entity.Profile;
+import com.hospital.hospitalmanagementbackend.auth.entity.RefreshToken;
+import com.hospital.hospitalmanagementbackend.auth.entity.User;
 import com.hospital.hospitalmanagementbackend.auth.jwt.JWTService;
 import com.hospital.hospitalmanagementbackend.auth.repository.ProfileRepository;
 import com.hospital.hospitalmanagementbackend.auth.repository.RefreshTokensRepository;
 import com.hospital.hospitalmanagementbackend.auth.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +36,7 @@ public class AuthenticationService {
     @Transactional
     public LoginResponse login(LoginRequest request) {
 
-        Users user = userRepository
+        User user = userRepository
                 .findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
@@ -57,7 +54,7 @@ public class AuthenticationService {
         String refreshToken =
                 jwtService.generateRefreshToken(user.getEmail());
 
-        RefreshTokens refreshTokenEntity = RefreshTokens.builder()
+        RefreshToken refreshTokenEntity = RefreshToken.builder()
                                                 .token(refreshToken)
                                                 .user(user)
                                                 .expiresAt(
@@ -70,7 +67,7 @@ public class AuthenticationService {
         String[] authorities = user.getRoles().stream()
                 .flatMap(role -> role.getPermissions().stream())
                 .map(
-                        Permissions::getName)
+                        Permission::getName)
                 .distinct()
                 .toArray(String[]::new);
 
@@ -86,7 +83,7 @@ public class AuthenticationService {
 
             throw new RuntimeException("User exists try another email");
         }
-        Users user = new Users();
+        User user = new User();
 
         user.setEmail(request.getEmail());
 
@@ -98,9 +95,9 @@ public class AuthenticationService {
 
         user.setEmailVerified(false);
 
-        Users savedUser = userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
-        Profiles profile = new Profiles();
+        Profile profile = new Profile();
 
         profile.setFirstName(request.getFirstName());
 
@@ -128,7 +125,7 @@ public class AuthenticationService {
             RefreshTokenRequest request
     ) {
 
-        RefreshTokens refreshToken =
+        RefreshToken refreshToken =
                 refreshTokensRepository
                         .findByToken(
                                 request.getRefreshToken()
@@ -173,7 +170,7 @@ public class AuthenticationService {
             LogoutRequest request
     ) {
 
-        RefreshTokens refreshToken =
+        RefreshToken refreshToken =
                 refreshTokensRepository
                         .findByToken(
                                 request.getRefreshToken()

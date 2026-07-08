@@ -2,21 +2,18 @@ package com.hospital.hospitalmanagementbackend.auth.entity;
 
 import com.hospital.hospitalmanagementbackend.common.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Table(name = "profiles", schema = "auth")
-public class Profiles extends BaseEntity {
+public class Profile extends BaseEntity {
 
 
 
@@ -37,6 +34,6 @@ public class Profiles extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Users user;
+    private User user;
 
 }

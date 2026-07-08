@@ -3,9 +3,9 @@ package com.hospital.hospitalmanagementbackend.auth.service;
 import com.hospital.hospitalmanagementbackend.auth.dto.request.RoleRequest;
 import com.hospital.hospitalmanagementbackend.auth.dto.response.PermissionResponse;
 import com.hospital.hospitalmanagementbackend.auth.dto.response.RoleResponse;
-import com.hospital.hospitalmanagementbackend.auth.entity.Permissions;
-import com.hospital.hospitalmanagementbackend.auth.entity.Roles;
-import com.hospital.hospitalmanagementbackend.auth.entity.Users;
+import com.hospital.hospitalmanagementbackend.auth.entity.Permission;
+import com.hospital.hospitalmanagementbackend.auth.entity.Role;
+import com.hospital.hospitalmanagementbackend.auth.entity.User;
 import com.hospital.hospitalmanagementbackend.auth.repository.PermissionRepository;
 import com.hospital.hospitalmanagementbackend.auth.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class RoleServices {
     private final RoleRepository roleRepo;
     private final PermissionRepository permissionRepository;
 
-    private RoleResponse mapToResponse(Roles role) {
+    private RoleResponse mapToResponse(Role role) {
 
         List<PermissionResponse> permissions = role.getPermissions().stream()
                                                     .map(permission ->
@@ -54,18 +54,18 @@ public class RoleServices {
 
     public RoleResponse getRoleByIdService(UUID id) {
 
-        Roles role = roleRepo.findById(id).orElseThrow(() -> new RuntimeException("Role not found") );
+        Role role = roleRepo.findById(id).orElseThrow(() -> new RuntimeException("Role not found") );
 
         return mapToResponse(role);
     }
 
     @Transactional
     public String postRoleService(RoleRequest request) {
-       Roles role = new Roles();
+       Role role = new Role();
        role.setName(request.getName());
        role.setDescription(request.getDescription());
 
-       Set<Permissions> permissions = request.getPermissionIds().stream().map( permissionId -> permissionRepository.findById(permissionId).orElseThrow(() -> new RuntimeException("Permission not found"))).collect(Collectors.toSet());
+       Set<Permission> permissions = request.getPermissionIds().stream().map(permissionId -> permissionRepository.findById(permissionId).orElseThrow(() -> new RuntimeException("Permission not found"))).collect(Collectors.toSet());
 
        role.setPermissions(permissions);
 
@@ -76,13 +76,13 @@ public class RoleServices {
 
     @Transactional
     public String updateRoleService(UUID id, RoleRequest request) {
-       Roles role = roleRepo.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
+       Role role = roleRepo.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
        
        role.setName(request.getName());
        
        role.setDescription(request.getDescription());
 
-       Set<Permissions> permissions = request.getPermissionIds().stream().map( permissionId -> permissionRepository.findById(permissionId).orElseThrow(() -> new RuntimeException("Permission not found"))).collect(Collectors.toSet());
+       Set<Permission> permissions = request.getPermissionIds().stream().map(permissionId -> permissionRepository.findById(permissionId).orElseThrow(() -> new RuntimeException("Permission not found"))).collect(Collectors.toSet());
 
        role.setPermissions(permissions);
 
@@ -95,9 +95,9 @@ public class RoleServices {
 
     @Transactional
     public String deleteRoleService(UUID id) {
-        Roles role = roleRepo.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role = roleRepo.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
 
-        for(Users user : role.getUsers()) {
+        for(User user : role.getUsers()) {
             user.getRoles().remove(role);
         }
         roleRepo.delete(role);

@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "refresh_tokens", schema = "auth")
-public class RefreshTokens {
+public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,7 +25,7 @@ public class RefreshTokens {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private User user;
 
     @Column(name = "expires_at", nullable = false)
     private LocalDateTime expiresAt;

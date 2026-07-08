@@ -1,6 +1,6 @@
 package com.hospital.hospitalmanagementbackend.auth.security;
 
-import com.hospital.hospitalmanagementbackend.auth.entity.Users;
+import com.hospital.hospitalmanagementbackend.auth.entity.User;
 import com.hospital.hospitalmanagementbackend.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
 
-        Users user = userRepository
+        User user = userRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 

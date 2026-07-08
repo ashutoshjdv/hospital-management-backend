@@ -2,7 +2,7 @@ package com.hospital.hospitalmanagementbackend.organization.specialization.entit
 
 import com.hospital.hospitalmanagementbackend.common.entity.BaseEntity;
 import com.hospital.hospitalmanagementbackend.common.enums.Status;
-import com.hospital.hospitalmanagementbackend.organization.doctorprofile.entity.DoctorProfiles;
+import com.hospital.hospitalmanagementbackend.organization.doctorprofile.entity.DoctorProfile;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Specializations extends BaseEntity {
+public class Specialization extends BaseEntity {
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -29,5 +29,5 @@ public class Specializations extends BaseEntity {
     private Status status;
 
     @ManyToMany(mappedBy = "specializations")
-    private Set<DoctorProfiles> doctorProfiles = new HashSet<>();
+    private Set<DoctorProfile> doctorProfiles = new HashSet<>();
 }

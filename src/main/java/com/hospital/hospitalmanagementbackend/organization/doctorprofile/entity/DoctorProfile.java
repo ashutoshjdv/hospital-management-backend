@@ -1,7 +1,7 @@
 package com.hospital.hospitalmanagementbackend.organization.doctorprofile.entity;
 
 import com.hospital.hospitalmanagementbackend.common.entity.AuditableEntity;
-import com.hospital.hospitalmanagementbackend.organization.specialization.entity.Specializations;
+import com.hospital.hospitalmanagementbackend.organization.specialization.entity.Specialization;
 import com.hospital.hospitalmanagementbackend.organization.staff.entity.Staff;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DoctorProfiles extends AuditableEntity {
+public class DoctorProfile extends AuditableEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id")
@@ -45,5 +45,5 @@ public class DoctorProfiles extends AuditableEntity {
             joinColumns = @JoinColumn(name = "doctor_profile_id"),
             inverseJoinColumns = @JoinColumn(name = "specialization_id")
     )
-    private Set<Specializations> specializations = new HashSet<>();
+    private Set<Specialization> specializations = new HashSet<>();
 }

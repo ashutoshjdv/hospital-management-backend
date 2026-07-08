@@ -1,6 +1,5 @@
 package com.hospital.hospitalmanagementbackend.auth.dto.request;
 
-import com.hospital.hospitalmanagementbackend.auth.entity.Permissions;
 import lombok.Data;
 
 import java.util.List;

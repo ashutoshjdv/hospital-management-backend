@@ -2,7 +2,7 @@ package com.hospital.hospitalmanagementbackend.organization.department.entity;
 
 import com.hospital.hospitalmanagementbackend.common.entity.AuditableEntity;
 import com.hospital.hospitalmanagementbackend.common.enums.Status;
-import com.hospital.hospitalmanagementbackend.organization.hospital.entity.Hospitals;
+import com.hospital.hospitalmanagementbackend.organization.hospital.entity.Hospital;
 import com.hospital.hospitalmanagementbackend.organization.staff.entity.Staff;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,11 +17,11 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Departments extends AuditableEntity {
+public class Department extends AuditableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id", nullable = false)
-    private Hospitals hospital;
+    private Hospital hospital;
 
     @Column(nullable = false, length = 100)
     private String name;

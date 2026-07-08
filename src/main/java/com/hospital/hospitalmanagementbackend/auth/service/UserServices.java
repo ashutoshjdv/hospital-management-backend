@@ -3,12 +3,11 @@ package com.hospital.hospitalmanagementbackend.auth.service;
 import com.hospital.hospitalmanagementbackend.auth.dto.request.AssignRoleRequest;
 import com.hospital.hospitalmanagementbackend.auth.dto.response.UserResponse;
 import com.hospital.hospitalmanagementbackend.auth.dto.response.UserRoleResponse;
-import com.hospital.hospitalmanagementbackend.auth.entity.Roles;
-import com.hospital.hospitalmanagementbackend.auth.entity.Users;
+import com.hospital.hospitalmanagementbackend.auth.entity.Role;
+import com.hospital.hospitalmanagementbackend.auth.entity.User;
 import com.hospital.hospitalmanagementbackend.auth.repository.RoleRepository;
 import com.hospital.hospitalmanagementbackend.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +31,7 @@ public class UserServices {
     }
 
     public String deactivateUserService(UUID id) {
-       Users user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("Could not find user"));
+       User user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("Could not find user"));
        user.setStatus("DEACTIVATED");
        user.setUpdatedAt(LocalDateTime.now());
        userRepo.save(user);
@@ -40,7 +39,7 @@ public class UserServices {
     }
 
     public String activateUserService(UUID id) {
-        Users user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("Could not find user"));
+        User user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("Could not find user"));
         user.setStatus("ACTIVATED");
         user.setUpdatedAt(LocalDateTime.now());
         userRepo.save(user);
@@ -49,7 +48,7 @@ public class UserServices {
 
     @Transactional
     public String verifyUserService(UUID id) {
-        Users user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("Could not find user"));
+        User user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("Could not find user"));
         user.setStatus("ACTIVATED");
         user.setEmailVerified(true);
         user.setUpdatedAt(LocalDateTime.now());
@@ -59,9 +58,9 @@ public class UserServices {
 
     @Transactional
     public String addRoleToUserService(UUID id, AssignRoleRequest request) {
-        Users user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("Could not find user"));
+        User user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("Could not find user"));
 
-        Set<Roles> roles = request.getRoleIds().stream().map( roleId -> roleRepo.findById(roleId).orElseThrow(() -> new RuntimeException("Role not found")) ).collect(Collectors.toSet());
+        Set<Role> roles = request.getRoleIds().stream().map(roleId -> roleRepo.findById(roleId).orElseThrow(() -> new RuntimeException("Role not found")) ).collect(Collectors.toSet());
 
         user.setRoles(roles);
 

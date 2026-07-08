@@ -2,7 +2,7 @@ package com.hospital.hospitalmanagementbackend.organization.hospital.entity;
 
 import com.hospital.hospitalmanagementbackend.common.entity.AuditableEntity;
 import com.hospital.hospitalmanagementbackend.common.enums.Status;
-import com.hospital.hospitalmanagementbackend.organization.department.entity.Departments;
+import com.hospital.hospitalmanagementbackend.organization.department.entity.Department;
 import com.hospital.hospitalmanagementbackend.organization.staff.entity.Staff;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Hospitals extends AuditableEntity {
+public class Hospital extends AuditableEntity {
 
     @Column(name = "name", nullable = false, length = 150)
     private String name;
@@ -66,7 +66,7 @@ public class Hospitals extends AuditableEntity {
     private Status status;
 
     @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY)
-    private Set<Departments> departments = new HashSet<>();
+    private Set<Department> departments = new HashSet<>();
 
     @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY)
     private Set<Staff> staffMembers = new HashSet<>();
