@@ -12,5 +12,7 @@ public interface DesignationRepository extends JpaRepository<Designation, UUID> 
 
     Optional<Designation> findByName(String name);
 
-    boolean existsByName(String name);
+    boolean existsByNameIgnoreCase(String name);
+
+    boolean existsByNameIgnoreCaseAndIdNot(String name, UUID id);
 }

@@ -27,10 +27,6 @@ public class UpdateStaffRequest {
 
     private UUID reportingManagerId;
 
-    @NotBlank(message = ValidationMessages.REQUIRED)
-    @Size(max = 30)
-    private String employeeCode;
-
     @NotNull(message = ValidationMessages.REQUIRED)
     private LocalDate joiningDate;
 

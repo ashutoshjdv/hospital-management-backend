@@ -13,4 +13,7 @@ public interface HospitalRepository extends JpaRepository<Hospital, UUID> {
     Optional<Hospital> findByHospitalCode(String hospitalCode);
 
     boolean existsByHospitalCode(String hospitalCode);
+
+    Optional<Hospital> findFirstByOrderByCreatedAtAsc();
+
 }

@@ -5,13 +5,15 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Builder
 @AllArgsConstructor
 public class DoctorProfileResponse {
+
+    private UUID id;
 
     private UUID staffId;
 
@@ -27,5 +29,5 @@ public class DoctorProfileResponse {
 
     private String bio;
 
-    private Set<String> specializations;
+    private List<String> specializations;
 }

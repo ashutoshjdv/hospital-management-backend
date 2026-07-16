@@ -10,9 +10,27 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface DepartmentRepository extends JpaRepository<Department, UUID>, JpaSpecificationExecutor<Department> {
+public interface DepartmentRepository extends JpaRepository<Department, UUID>,
+        JpaSpecificationExecutor<Department> {
 
-    boolean existsByHospitalIdAndName(UUID hospitalId, String name);
+    boolean existsByHospital_IdAndName(
+            UUID hospitalId,
+            String name
+    );
 
-    Page<Department> findByHospitalId(UUID hospitalId, Pageable pageable);
+    Page<Department> findByHospital_Id(
+            UUID hospitalId,
+            Pageable pageable
+    );
+
+    boolean existsByHospital_IdAndNameIgnoreCase(
+            UUID hospitalId,
+            String name
+    );
+
+    boolean existsByHospital_IdAndNameIgnoreCaseAndIdNot(
+            UUID hospitalId,
+            String name,
+            UUID id
+    );
 }

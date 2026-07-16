@@ -18,10 +18,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UpdateDoctorProfileRequest {
 
-    @NotBlank(message = ValidationMessages.REQUIRED)
-    @Size(max = 100)
-    private String licenseNumber;
-
     @Size(max = 255)
     private String qualification;
 
