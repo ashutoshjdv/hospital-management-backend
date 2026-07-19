@@ -1,6 +1,5 @@
 package com.hospital.hospitalmanagementbackend.organization.doctorprofile.entity;
 
-import com.hospital.hospitalmanagementbackend.common.entity.AuditableEntity;
 import com.hospital.hospitalmanagementbackend.organization.specialization.entity.Specialization;
 import com.hospital.hospitalmanagementbackend.organization.staff.entity.Staff;
 import jakarta.persistence.*;
@@ -9,17 +8,24 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "doctor_profiles", schema = "organization")
 @Getter
 @Setter
 @NoArgsConstructor
-public class DoctorProfile extends AuditableEntity {
+public class DoctorProfile {
+
+    @Id
+    @Column(name = "staff_id", nullable = false)
+    private UUID id;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
     @JoinColumn(name = "staff_id")
     private Staff staff;
 
@@ -37,6 +43,12 @@ public class DoctorProfile extends AuditableEntity {
 
     @Column(columnDefinition = "TEXT")
     private String bio;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

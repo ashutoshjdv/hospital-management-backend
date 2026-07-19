@@ -16,6 +16,8 @@ public class DoctorProfileFactory {
 
         profile.setStaff(staff);
 
+        profile.setId(staff.getId());
+
         profile.setLicenseNumber(generateLicenseNumber());
 
         profile.setQualification("");

@@ -118,7 +118,6 @@ public class DoctorProfileService {
                 .toList();
 
         return DoctorProfileResponse.builder()
-                .id(doctorProfile.getId())
                 .staffId(doctorProfile.getStaff().getId())
                 .employeeName(employeeName)
                 .licenseNumber(doctorProfile.getLicenseNumber())

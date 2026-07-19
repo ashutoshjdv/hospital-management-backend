@@ -13,7 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class DoctorProfileResponse {
 
-    private UUID id;
 
     private UUID staffId;
 
